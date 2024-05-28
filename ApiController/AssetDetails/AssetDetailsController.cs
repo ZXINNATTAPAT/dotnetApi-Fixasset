@@ -29,8 +29,6 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                // Handle the case where assetDetails is null
-                // For example, return a 404 Not Found response or throw an exception
                 return NotFound();
             }
         }
