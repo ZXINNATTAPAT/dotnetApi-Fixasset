@@ -60,3 +60,4 @@ C:\Users\bigbo\Desktop\Fixed-Assets\WebApplication1\bin\Debug\net6.0\Humanizer.d
 C:\Users\bigbo\Desktop\Fixed-Assets\WebApplication1\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\bigbo\Desktop\Fixed-Assets\WebApplication1\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\bigbo\Desktop\Fixed-Assets\WebApplication1\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\bigbo\Desktop\Fixed-Assets\WebApplication1\bin\Debug\net6.0\AutoMapper.dll

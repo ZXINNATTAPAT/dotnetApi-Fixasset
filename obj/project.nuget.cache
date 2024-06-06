@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ORnskuXDG2zceEQ6pEDVEpJp7b8hEX1j+RaI51VT6tOKD5cHcOGdfl1fkMx+w8Fnh/c0af6/AtEsTS5VOt/wIA==",
+  "dgSpecHash": "a9iYxUDSLIuDYjKGmvOdK1CiWwAPX7cdeoTMHSgvrnrkpxyo5h3CobcUESZ+0P2/F6GESZJAg3jhiJWS6xP2Ag==",
   "success": true,
   "projectFilePath": "C:\\Users\\bigbo\\Desktop\\Fixed-Assets\\WebApplication1\\WebApplication1.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\bigbo\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\bigbo\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\bigbo\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\bigbo\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

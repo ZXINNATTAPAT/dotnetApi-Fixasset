@@ -7,6 +7,9 @@ namespace WebApplication1.Models
         public DbSet<Users>? Users { get; set; }
          // ใช้ nullable reference types
         public DbSet<AssetDetails>? AssetDetails { get; set; } 
+
+        public DbSet<AssetDetailsAudit>? AssetDetailsAudits { get; set; } 
+        
         // ใช้ nullable reference types
         public DbSet<AssetDetails2>? AssetDetails2 { get; set; }
          // ใช้ nullable reference types

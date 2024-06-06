@@ -5,15 +5,18 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AssetDetailsController : ControllerBase
     {
         private readonly AssetsContext _context;
+        private readonly ILogger<AssetDetailsController> _logger;
 
-        public AssetDetailsController(AssetsContext context)
+        public AssetDetailsController(AssetsContext context ,ILogger<AssetDetailsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/AssetDetails
@@ -155,23 +158,81 @@ namespace WebApplication1.Controllers
             return _context.AssetDetails.Count(a => a.AssetCode.StartsWith(assetCode));
         }
 
-        // PUT: api/AssetDetails/5
         [HttpPut("{id}")]
-        public IActionResult PutAssetDetails(int id, AssetDetails assetDetails)
+        public async Task<IActionResult> PutAssetDetails(int id, AssetDetails assetDetails)
         {
             if (id != assetDetails.AssetId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(assetDetails).State = EntityState.Modified;
-            _context.SaveChanges();
+            try
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    var entityEntry = _context.Entry(assetDetails);
 
-            // Invalidate cache for GetAssetDetails action
-            Response.Headers["Cache-Control"] = "no-cache";
+                    // Load original values
+                    var originalAsset = await _context.AssetDetails.AsNoTracking().FirstOrDefaultAsync(a => a.AssetId == id);
+                    if (originalAsset == null)
+                    {
+                        return NotFound();
+                    }
 
-            return NoContent();
+                    var auditRecords = new List<AssetDetailsAudit>();
+
+                    foreach (var property in entityEntry.Properties)
+                    {
+                        var originalValue = originalAsset.GetType().GetProperty(property.Metadata.Name)?.GetValue(originalAsset, null);
+                        var currentValue = property.CurrentValue;
+
+                        // Check for changes and log them if necessary
+                        if (!Equals(originalValue, currentValue))
+                        {
+                            auditRecords.Add(new AssetDetailsAudit
+                            {
+                                AssetId = assetDetails.AssetId,
+                                PropertyName = property.Metadata.Name,
+                                OldValue = originalValue?.ToString(),
+                                NewValue = currentValue?.ToString(),
+                                ModifiedDate = DateTime.UtcNow,
+                                ModifiedBy = "current_user" // Replace with actual user ID or name
+                            });
+                        }
+                    }
+
+                    // Mark entity as modified
+                    entityEntry.State = EntityState.Modified;
+
+                    // Save changes in AssetDetails
+                    await _context.SaveChangesAsync();
+
+                    // Save audit records if there are any changes
+                    if (auditRecords.Any())
+                    {
+                        await _context.AssetDetailsAudits.AddRangeAsync(auditRecords);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Commit transaction
+                    await transaction.CommitAsync();
+                }
+
+                // Invalidate cache for GetAssetDetails action
+                Response.Headers["Cache-Control"] = "no-cache";
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception details for better troubleshooting
+                _logger.LogError(ex, "An error occurred while saving asset details.");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "An error occurred while saving asset details.");
+            }
         }
+
+
 
         // DELETE: api/AssetDetails/5
         [HttpDelete("{id}")]

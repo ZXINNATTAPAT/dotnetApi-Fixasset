@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO.Compression;
 using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Generate a new key (32 bytes for 256 bits)
 var key = new byte[32];
@@ -32,14 +32,14 @@ builder.Configuration["Jwt:Key"] = base64Key;
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(base64Key));
 var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
-
+// ใน ConfigureServices
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AssetsContext>(options =>
 {
     // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
     options.UseSqlServer("Server=DESKTOP-KTV0Q62\\SQLEXPRESS;Database=Fixedassetsdb8;Trusted_Connection=True;TrustServerCertificate=True;");
 });
-
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters {
@@ -134,6 +134,7 @@ app.UseHttpsRedirection();
 app.UseResponseCompression();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
